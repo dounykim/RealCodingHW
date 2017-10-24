@@ -1,6 +1,12 @@
 package poker;
 
-        import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class Evaluator {
@@ -11,7 +17,7 @@ public class Evaluator {
         } else if (isRoyalFlush(hand)) {
             return "ROYAL_STRAIGHT_FLUSH";
         } else if (isFourOfAKind(hand)) {
-            return "FOUR_OF_A_KIND";
+            return "Four_of_a_Kind";
         } else { // bad poker hand
             return null;
         }
@@ -21,11 +27,20 @@ public class Evaluator {
      * Checks a hand for a royal flush.
      */
     boolean isRoyalFlush(Hand hand) {
-        List<Integer> royals = Arrays.asList([1, 10, 11, 12, 13])
-        Set<Integer> suits = new HashSet<Integer>();
+        // create royals list
+        Set<Integer> royals = new HashSet();
+        royals.add(10);
+        royals.add(11);
+        royals.add(12);
+        royals.add(13);
+        royals.add(1);
+
+        // track suit of the royals
+        Set<Suit> suits = new HashSet<Suit>();
         for (Card card : hand.getHandList()) {
             if (royals.contains(card.getRank())) {
-                royals.remove(new Integer(card.getRank()));
+                royals.remove(card.getRank());
+                suits.add(card.getSuit());
             }
         }
 
@@ -39,6 +54,7 @@ public class Evaluator {
     boolean isFourOfAKind(Hand hand) {
         Map<Integer, Integer> ranks = new HashMap<Integer, Integer>();
         for (Card card : hand.getHandList()) {
+            // increment rank count in table
             if (ranks.containsKey(card.getRank())) {
                 ranks.put(card.getRank(), ranks.get(card.getRank()) + 1);
             } else {
@@ -46,9 +62,11 @@ public class Evaluator {
             }
         }
 
-        // check if the map contains a count of four.
-        return false;
+        // map contains at least four of a kind
+        return Collections.max(ranks.values()) >= 4;
     }
 
 }
+
+
 
